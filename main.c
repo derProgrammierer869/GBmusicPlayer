@@ -84,40 +84,45 @@ void main()
             case J_UP:
             if(withinBounds(arrowsprite.x, arrowsprite.y -48)){
                     arrowsprite.y -=48;
-                    arrowsprite.row--; 
                     scroll_sprite(0, 0, -48);
+                    arrowsprite.row--; 
                     keydown = 1;
-                    break;
             }
+            break;
             case J_DOWN:
                 if(withinBounds(arrowsprite.x, arrowsprite.y +48)){
                     arrowsprite.y +=48;
+                    scroll_sprite(0, 0, 48);                    
                     arrowsprite.row++; 
-                    scroll_sprite(0, 0, 48);
                     keydown = 1;
-                    break;
                 }
+                break;
             case J_RIGHT:
                 if(withinBounds(arrowsprite.x +40, arrowsprite.y )){
                     arrowsprite.y +=40;
-                    arrowsprite.col++; 
                     scroll_sprite(0, 40, 0);
+                    arrowsprite.col++; 
                     keydown = 1;
-                    break;
                 }
+                break;
             case J_LEFT:
                 if(withinBounds(arrowsprite.x -40, arrowsprite.y )){
                     arrowsprite.y -=40;
-                    arrowsprite.col--; 
                     scroll_sprite(0, -40, 0);
+                    arrowsprite.col--; 
                     keydown = 1;
-                    break;
                 }
+                break;
             case J_A:
+                //shpw
                 keydown = 1;
+                break;
         }
         performantdelay(2);
         }
     }
+
+
+
 
 
