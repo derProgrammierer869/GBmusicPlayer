@@ -12,19 +12,17 @@
 
 struct Cursor arrowsprite;
 
-const UINT8 mincursorx = "";
-const UINT8 mincursory = "";
-const UINT8 maxcursorx = "";
-const UINT8 maxcursory = "";
+const UINT8 mincursorx = 40;
+const UINT8 mincursory = 56;
+const UINT8 maxcursorx = 136;
+const UINT8 maxcursory = 112;
 
-const char blankmap[6] = {0x2A, 0x00, 0x27, 0x28, 0x2B, 0x2C}; //these coords need to be set to the coords that the arrow will be landing on
-UINT8 playerlocation[2];
 UBYTE keydown;
-UBYTE outofbounds(UINT8 x, UINT8 y){
-    if(x == 40 && y == 56 || x == 40 && y == -8 || x == 80 && y == 56 || x == 80 && y == -8 || x == 120 && y == 56 || x == 120 && y == -8){
+UBYTE withinBounds(UINT8 x, UINT8 y){
+    if(x == 40 && y == 56 || x == 40 && y == 112 || x == 88 && y == 56 || x == 88 && y == 112 || x == 136 && y == 56 || x == 136 && y == 112){
         return 1;
         }
-    
+        return x >= mincursorx && x <= maxcursorx && y >= mincursory && y <= maxcursory;
 }
 
 void setPP(){
@@ -53,24 +51,21 @@ void main()
     min_font = font_load(font_min);
     font_set(min_font);
 
-    set_win_tiles(0, 0, 12, 1, titlemap);
-    move_win(06, 10);
-
     set_bkg_data(37,16, NB);
     set_bkg_tiles(0,0, ActualBackgroundWidth, ActualBackgroundHeight, ActualBackground);
-    set_sprite_data(0, 2, TileLabel); /*Try to change the variable name of this. This is the arrow sprite*/
-    set_sprite_tile(0, 0);
 
 
-    
-    playerlocation[0] = 40;//x and y coords for player
-    playerlocation[1] = 56;
-    
-    move_sprite(0,playerlocation[0], playerlocation[1]);
+    set_sprite_data(0, 2, TileLabel);
+    set_sprite_tile(0,0);
+
+    arrowsprite.x = 40;
+    arrowsprite.y = 56;
+    arrowsprite.col = 0;
+    arrowsprite.row = 0;
+    move_sprite(0, arrowsprite.x, arrowsprite.y);
 
 
     SHOW_BKG;
-    /*SHOW_WIN;*/
     DISPLAY_ON;
     SHOW_SPRITES;
     
@@ -79,14 +74,7 @@ void main()
     while(1){
 
         UBYTE joypad_state = joypad();
-        if(joypad_state) /*{
-            NR10_REG = 0x16;
-            NR11_REG = 0x40;
-            NR12_REG = 0x73;
-            NR13_REG = 0x00;
-            NR14_REG = 0xC3;       
-            
-        }*/
+        if(joypad_state)
         delay(100);
         if(keydown){
             waitpadup();
@@ -94,38 +82,42 @@ void main()
         }
         switch (joypad()){
             case J_UP:
-                arrowsprite.y -=48;
-                arrowsprite.row--; 
-                scroll_sprite(0, 0, -48);
+            if(withinBounds(arrowsprite.x, arrowsprite.y -48)){
+                    arrowsprite.y -=48;
+                    arrowsprite.row--; 
+                    scroll_sprite(0, 0, -48);
+                    keydown = 1;
+                    break;
+            }
+            case J_DOWN:
+                if(withinBounds(arrowsprite.x, arrowsprite.y +48)){
+                    arrowsprite.y +=48;
+                    arrowsprite.row++; 
+                    scroll_sprite(0, 0, 48);
+                    keydown = 1;
+                    break;
+                }
+            case J_RIGHT:
+                if(withinBounds(arrowsprite.x +40, arrowsprite.y )){
+                    arrowsprite.y +=40;
+                    arrowsprite.col++; 
+                    scroll_sprite(0, 40, 0);
+                    keydown = 1;
+                    break;
+                }
+            case J_LEFT:
+                if(withinBounds(arrowsprite.x -40, arrowsprite.y )){
+                    arrowsprite.y -=40;
+                    arrowsprite.col--; 
+                    scroll_sprite(0, -40, 0);
+                    keydown = 1;
+                    break;
+                }
+            case J_A:
                 keydown = 1;
-                break;
-
-        case J_DOWN:
-            arrowsprite.y +=48;
-            arrowsprite.row++; 
-            scroll_sprite(0, 0, 48);
-            keydown = 1;
-            break;
-
-        case J_RIGHT:
-            arrowsprite.y +=40;
-            arrowsprite.col++; 
-            scroll_sprite(0, 40, 0);
-            keydown = 1;
-            break;
-
-        case J_LEFT:
-            arrowsprite.y -=40;
-            arrowsprite.col--; 
-            scroll_sprite(0, -40, 0);
-            keydown = 1;
-            break;
-        case J_A:
-            keydown = 1;
         }
         performantdelay(2);
         }
     }
-
 
 
