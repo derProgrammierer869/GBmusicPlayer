@@ -23,6 +23,8 @@ UBYTE withinBounds(UINT8 x, UINT8 y){
         return 1;
         }
         return x >= mincursorx && x <= maxcursorx && y >= mincursory && y <= maxcursory;
+    
+    //set the top 3 folders as the main folders, and the bottom 3 as the withinBounds folders. If that doesnt work, only enable 2 or 3 folders, delete the others.
 }
 
 void setPP(){
